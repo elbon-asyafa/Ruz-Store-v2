@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#192338">
+  <title>Ruz Stationary — Toko Alat Tulis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav>
+  <div class="logo">Ruz <span>Stationary</span></div>
+
+  <ul class="nav-links">
+    <li><a href="#" onclick="scrollToTop();return false;">Beranda</a></li>
+    <li><a href="#" onclick="scrollToProducts();return false;">Produk</a></li>
+    <li><a href="#" onclick="openPromo();return false;">Promo</a></li>
+    <li><a href="#" onclick="openAbout();return false;">Tentang Kami</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <input type="text" class="search-box" id="searchInput" placeholder="Cari produk..." oninput="filterProducts()">
+    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <button class="cart-btn" onclick="openCart()">
+      🛒 <span class="cart-text">Keranjang</span>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ── MOBILE NAV DRAWER ── -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer">
+  <input type="text" class="mobile-search" id="mobileSearch" placeholder="🔍 Cari produk...">
+  <a href="#" onclick="closeMobileMenu();scrollToTop();return false;">🏠 Beranda</a>
+  <a href="#" onclick="closeMobileMenu();scrollToProducts();return false;">📦 Produk</a>
+  <a href="#" onclick="closeMobileMenu();openPromo();return false;">🏷️ Promo</a>
+  <a href="#" onclick="closeMobileMenu();openAbout();return false;">ℹ️ Tentang Kami</a>
+</div>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-text">
+    <span class="hero-badge">✨ Koleksi Terbaru 2025</span>
+    <h1>Lengkapi Kebutuhan <span>Alat Tulis</span> Kamu</h1>
+    <p>Temukan pulpen, buku, pensil, dan perlengkapan kantor premium dengan harga terjangkau. Gratis ongkir untuk pembelian di atas Rp150.000!</p>
+    <a href="#" class="hero-cta" onclick="scrollToProducts();return false;">
+      Belanja Sekarang ↓
+    </a>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-icons">
+      <div class="hi">✏️</div>
+      <div class="hi">📒</div>
+      <div class="hi">🖊️</div>
+      <div class="hi">📐</div>
+      <div class="hi">📌</div>
+      <div class="hi">📎</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CATEGORIES ── -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Kategori <span>Produk</span></h2>
+  </div>
+  <div class="category-grid" id="categoryGrid"></div>
+</section>
+
+<!-- ── PRODUCTS ── -->
+<section class="products-section" id="productsSection">
+  <div class="section-header">
+    <h2 class="section-title">Semua <span>Produk</span></h2>
+  </div>
+  <div class="filter-bar">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" onclick="setFilter('all', this)">Semua</button>
+    <button class="filter-btn" onclick="setFilter('pensil-pulpen', this)">Pensil &amp; Pulpen</button>
+    <button class="filter-btn" onclick="setFilter('buku-kertas', this)">Buku &amp; Kertas</button>
+    <button class="filter-btn" onclick="setFilter('penggaris-alat', this)">Penggaris &amp; Alat</button>
+    <button class="filter-btn" onclick="setFilter('perekat-penjepit', this)">Perekat &amp; Penjepit</button>
+    <button class="filter-btn" onclick="setFilter('warna-seni', this)">Warna &amp; Seni</button>
+    <select class="sort-select" onchange="sortProducts(this.value)">
+      <option value="default">Urutkan: Default</option>
+      <option value="price-asc">Harga: Termurah</option>
+      <option value="price-desc">Harga: Termahal</option>
+      <option value="rating">Rating Tertinggi</option>
+    </select>
+  </div>
+  <div class="product-grid" id="productGrid"></div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <p>© 2025 <span>Ruz Stationary</span> — Toko Alat Tulis Terpercaya 🖊️<br>
+  Jl. Pendidikan No. 17, Jakarta | 0800-STASIONERY</p>
+</footer>
+
+<!-- ── CART OVERLAY + DRAWER ── -->
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="drawer-head">
+    <h3>🛒 Keranjang Belanja</h3>
+    <button class="close-btn" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="total-row">
+      <span class="total-label">Total Belanja</span>
+      <span class="total-val" id="totalVal">Rp 0</span>
+    </div>
+    <button class="checkout-btn" onclick="openCheckoutForm()">Checkout Sekarang →</button>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast"></div>
+
+<!-- ── SHARED MODAL OVERLAY ── -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeAllModals()"></div>
+
+<!-- ── ABOUT MODAL ── -->
+<div class="modal-box" id="aboutModal">
+  <button class="modal-close" onclick="closeAllModals()">✕</button>
+  <div class="about-logo">Ruz <span>Stationary</span></div>
+  <p class="about-tagline">Toko alat tulis terpercaya sejak 2018 🖊️</p>
+  <p class="about-desc">Kami hadir untuk memenuhi kebutuhan alat tulis kamu — dari pelajar hingga profesional. Kualitas terjamin, harga bersahabat.</p>
+  <div class="about-divider"></div>
+  <h4 class="about-sosmed-title">📲 Temukan Kami di Media Sosial</h4>
+  <div class="about-sosmed">
+    <a href="https://instagram.com/asyworst" target="_blank" class="sosmed-card ig">
+      <span class="sosmed-icon">📸</span>
+      <div><div class="sosmed-name">Instagram Elbon</div><div class="sosmed-handle">@asyworst</div></div>
+    </a>
+    <a href="https://instagram.com/haerruuu_" target="_blank" class="sosmed-card ig">
+      <span class="sosmed-icon">📸</span>
+      <div><div class="sosmed-name">Instagram Haeru</div><div class="sosmed-handle">@haerruuu_</div></div>
+    </a>
+    <a href="https://wa.me/6283825146838" target="_blank" class="sosmed-card wa">
+      <span class="sosmed-icon">💬</span>
+      <div><div class="sosmed-name">WhatsApp</div><div class="sosmed-handle">+62 838-2514-6838</div></div>
+    </a>
+    <a href="https://tiktok.com/@asyaffarn" target="_blank" class="sosmed-card tt">
+      <span class="sosmed-icon">🎵</span>
+      <div><div class="sosmed-name">TikTok Elbon</div><div class="sosmed-handle">@asyworst</div></div>
+    </a>
+    <a href="https://tiktok.com/@haerruuu" target="_blank" class="sosmed-card tt">
+      <span class="sosmed-icon">🎵</span>
+      <div><div class="sosmed-name">TikTok Haeru</div><div class="sosmed-handle">@haeruu</div></div>
+    </a>
+    <a href="https://ruzstore.rf.gd" target="_blank" class="sosmed-card web">
+      <span class="sosmed-icon">🌐</span>
+      <div><div class="sosmed-name">Website</div><div class="sosmed-handle">www.ruzstore.rf.gd</div></div>
+    </a>
+  </div>
+  <div class="about-divider"></div>
+  <p class="about-hours">🕐 Jam Operasional: Senin–Sabtu, 08.00–17.00 WIB</p>
+</div>
+
+<!-- ── PROMO MODAL ── -->
+<div class="modal-box" id="promoModal">
+  <button class="modal-close" onclick="closeAllModals()">✕</button>
+  <div class="promo-modal-head">
+    <span>🏷️</span>
+    <div>
+      <div class="promo-modal-title">Produk <span>Promo</span></div>
+      <div class="promo-modal-sub">Klik produk untuk langsung melihat di katalog</div>
+    </div>
+  </div>
+  <div class="promo-list" id="promoList"></div>
+  <button class="promo-cta-all" onclick="goToAllPromo()">Lihat Semua Produk Promo →</button>
+</div>
+
+<!-- ── CHECKOUT FORM MODAL ── -->
+<div class="checkout-overlay" id="checkoutOverlay" onclick="closeCheckoutForm()"></div>
+<div class="checkout-modal" id="checkoutModal">
+  <div class="co-head">
+    <div>
+      <div class="co-title">📋 Form Pemesanan</div>
+      <div class="co-sub">Isi data pengiriman kamu dengan benar</div>
+    </div>
+    <button class="co-close" onclick="closeCheckoutForm()">✕</button>
+  </div>
+
+  <div class="co-order-summary" id="coSummary"></div>
+
+  <div class="co-section-label">📌 Data Wajib</div>
+
+  <div class="co-field">
+    <label class="co-label">Nama Pembeli <span class="req">*</span></label>
+    <input type="text" id="f-nama" class="co-input" placeholder="Contoh: Budi Santoso">
+    <div class="co-err" id="err-nama"></div>
+  </div>
+
+  <div class="co-field">
+    <label class="co-label">Alamat Lengkap <span class="req">*</span></label>
+    <textarea id="f-alamat" class="co-input co-textarea" placeholder="Jl. Contoh No. 10, Kelurahan, Kecamatan, Kota, Provinsi"></textarea>
+    <div class="co-err" id="err-alamat"></div>
+  </div>
+
+  <div class="co-field">
+    <label class="co-label">Jasa Pengiriman <span class="req">*</span></label>
+    <div class="co-radio-group" id="f-jasa">
+      <label class="co-radio"><input type="radio" name="jasa" value="JNE"> <span>JNE</span></label>
+      <label class="co-radio"><input type="radio" name="jasa" value="J&T"> <span>J&amp;T</span></label>
+      <label class="co-radio"><input type="radio" name="jasa" value="SiCepat"> <span>SiCepat</span></label>
+      <label class="co-radio"><input type="radio" name="jasa" value="GoSend"> <span>GoSend</span></label>
+    </div>
+    <div class="co-err" id="err-jasa"></div>
+  </div>
+
+  <div class="co-section-label" style="margin-top:16px;">📝 Data Opsional</div>
+
+  <div class="co-field">
+    <label class="co-label">Patokan Alamat</label>
+    <input type="text" id="f-patokan" class="co-input" placeholder="Contoh: dekat minimarket, depan mushola">
+  </div>
+
+  <div class="co-field">
+    <label class="co-label">Nomor Telepon</label>
+    <input type="tel" id="f-telp" class="co-input" placeholder="Contoh: 0812-3456-7890">
+  </div>
+
+  <div class="co-section-label" style="margin-top:16px;">💬 Kirim ke Admin</div>
+  <div class="co-admin-group">
+    <label class="co-admin-card" id="admin-elbon">
+      <input type="radio" name="admin" value="6283825146838" onclick="selectAdmin(this)">
+      <div class="co-admin-avatar">E</div>
+      <div>
+        <div class="co-admin-name">Elbon</div>
+        <div class="co-admin-num">0838-2514-6838</div>
+      </div>
+    </label>
+    <label class="co-admin-card" id="admin-haeru">
+      <input type="radio" name="admin" value="6285179599831" onclick="selectAdmin(this)">
+      <div class="co-admin-avatar">H</div>
+      <div>
+        <div class="co-admin-name">Haeru</div>
+        <div class="co-admin-num">0851-7959-9831</div>
+      </div>
+    </label>
+  </div>
+  <div class="co-err" id="err-admin"></div>
+
+  <button class="co-submit-btn" onclick="submitOrder()">✅ Konfirmasi &amp; Chat WhatsApp →</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
